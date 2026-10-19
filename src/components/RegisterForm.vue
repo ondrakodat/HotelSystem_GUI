@@ -43,7 +43,7 @@ async function register() {
     <input type="tel" id="phone" v-model="phone" /><br>
 
     <label for="password">Enter password</label><br>
-    <input type="password" id="password" v-model="password" /><br>
+    <input type="password" id="password" v-model="password" autocomplete="new-password"/><br>
 
     <button type="submit">Register</button>
   </form>

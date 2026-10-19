@@ -19,7 +19,7 @@ export async function registerPerson(registerDto: {
 
 export async function loginPerson(AuthDto: {
   email: string
-  hashedSecret: string
+  password: string
 }){
   const response = await fetch('http://localhost:8080/api/auth/login', {
     method : 'POST',
@@ -28,6 +28,8 @@ export async function loginPerson(AuthDto: {
     },
     body: JSON.stringify(AuthDto)
   })
+  console.log("Response : " + response.status)
   return response
+  
 
 }
