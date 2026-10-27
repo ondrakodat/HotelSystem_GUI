@@ -29,7 +29,8 @@ export async function loginPerson(AuthDto: {
     body: JSON.stringify(AuthDto)
   })
   console.log("Response : " + response.status)
-  return response
+  const data = await response.json()
+  console.log("Data : ", data)
   
-
+  return data
 }
