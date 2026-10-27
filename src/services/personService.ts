@@ -43,12 +43,13 @@ export async function loginPerson(AuthDto: {
 }
 
 export async function goText(){
+  console.log("Token : ", Boolean(token))
   const response = await fetch('http://localhost:8080/api/person/test', {
     method : 'GET',
     headers: {
       Authorization: `Bearer ${token}`
     }})
-    const data = await response.text
+    const data = await response.text()
 
     console.log("Data : ", data)
     console.log("Response : " + response.status)
