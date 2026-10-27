@@ -1,3 +1,5 @@
+import {token, setToken } from './auth'
+
 export async function registerPerson(registerDto: {
   username: string
   lastname: string
@@ -29,8 +31,27 @@ export async function loginPerson(AuthDto: {
     body: JSON.stringify(AuthDto)
   })
   console.log("Response : " + response.status)
-  const data = await response.json()
-  console.log("Data : ", data)
-  
-  return data
+  const data: {token : string } = await response.json()
+  console.log("Data : ", data.token)
+
+  if (!response.ok) {
+  throw new Error('Přihlášení se nezdařilo')
+  }
+
+  setToken(data.token)
+  return data.token
+}
+
+export async function goText(){
+  const response = await fetch('http://localhost:8080/api/person/test', {
+    method : 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }})
+    const data = await response.text
+
+    console.log("Data : ", data)
+    console.log("Response : " + response.status)
+
+    return data
 }
