@@ -30,7 +30,7 @@ export async function registerPerson(registerDto: {
   return response
 }
 
-
+//credentials means we want to include cookies in our request 
 export async function loginPerson(AuthDto: {
   email: string
   password: string
@@ -49,14 +49,12 @@ export async function loginPerson(AuthDto: {
   throw new Error('Přihlášení se nezdařilo')
   }
 }
-/*
-export async function goText(){
-  console.log("Token : ", Boolean(token))
+
+export async function testLoginIn(){
   const response = await fetch('http://localhost:8080/api/person/test', {
     method : 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`
-    }})
+    credentials: 'include'
+  })
     const data = await response.text()
 
     console.log("Data : ", data)
@@ -64,4 +62,8 @@ export async function goText(){
 
     return data
 }
-    */
+
+export function goTest(){
+  console.log("Test fugnuje")
+}
+    

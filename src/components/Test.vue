@@ -1,9 +1,10 @@
-
 <script setup lang="ts">
+import {testLoginIn} from '../services/personService'
+
 </script>
 
 <template>
-  <button>
+  <button @click="testLoginIn()">
     Otestovat přihlášení
   </button>
 </template>
