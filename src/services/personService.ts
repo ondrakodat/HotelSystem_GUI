@@ -1,5 +1,17 @@
-import {token, setToken } from './auth'
 
+/**
+ * Method for registration new Person in our Hotel system.
+ * POST method
+ * headers : application/json - we tell the server that we are sending JSON data in our request body.
+ * in body we send registerDto as JSON 
+ * @param registerDto 
+ * @returns 
+ */
+// registerDto : {} represents object thats representing our dto obj in Java
+// In java we would add RegisterDto dto to parameters but in ts we create new object type with values which it contains
+// so the signature is (name of obj parameter { body of obj })-> which is for parameters 
+// name ({}){ body of method }
+// response = await fetch(url, {Method Type, headers, body})
 export async function registerPerson(registerDto: {
   username: string
   lastname: string
@@ -28,20 +40,16 @@ export async function loginPerson(AuthDto: {
     headers: {
       'Content-Type': 'application/json'
     },
+    credentials: 'include',
     body: JSON.stringify(AuthDto)
   })
   console.log("Response : " + response.status)
-  const data: {token : string } = await response.json()
-  console.log("Data : ", data.token)
 
   if (!response.ok) {
   throw new Error('Přihlášení se nezdařilo')
   }
-
-  setToken(data.token)
-  return data.token
 }
-
+/*
 export async function goText(){
   console.log("Token : ", Boolean(token))
   const response = await fetch('http://localhost:8080/api/person/test', {
@@ -56,3 +64,4 @@ export async function goText(){
 
     return data
 }
+    */

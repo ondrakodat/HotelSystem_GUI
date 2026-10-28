@@ -1,10 +1,9 @@
 
 <script setup lang="ts">
-import {goText} from '../services/personService'
 </script>
 
 <template>
-  <button @click="goText">
+  <button>
     Otestovat přihlášení
   </button>
 </template>
