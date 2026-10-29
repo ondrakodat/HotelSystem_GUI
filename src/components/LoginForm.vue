@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import {loginPerson} from '../services/personService'
+import {loginPerson} from '../services/authService'
 
 const email = ref('')
 const secret = ref('')
@@ -10,9 +10,7 @@ async function Login(){
         email: email.value,
         password: secret.value
     }
-
     const response = await loginPerson(AuthDto)
-
 }
 
 </script>

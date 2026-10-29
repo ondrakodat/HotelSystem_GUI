@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { registerPerson } from '../services/personService'
+import { registerPerson } from '../services/authService'
 
 const username = ref('')
 const surname = ref('')
