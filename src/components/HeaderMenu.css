@@ -119,11 +119,16 @@
 }
 
 .login-link {
+  padding: 0;
+  border: none;
+  background: transparent;
   color: var(--hotel-dark-brown);
+  font-family: inherit;
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .login-link:hover {

@@ -19,11 +19,16 @@ export async function registerPerson(registerDto: {
   hashedSecret: string
   phone: string
 }) {
-  const response = await fetch('http://localhost:8080/api/person/register', {
+
+  const crsfToken = await getCsrfToken()
+
+  const response = await fetch('http://localhost:8080/api/auth/register', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-XSRF-TOKEN': crsfToken
     },
+    credentials: 'include',
     body: JSON.stringify(registerDto)
   })
 

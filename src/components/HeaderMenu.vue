@@ -2,9 +2,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import './HeaderMenu.css'
+import LoginForm from './LoginForm.vue'
 
 const menuOpen = ref(false)
-
+const showLogin = ref(false)
 const navigation = [
   { label: 'Domů', href: '#domu' },
   { label: 'Pokoje', href: '#pokoje' },
@@ -61,9 +62,9 @@ function closeMenu() {
         </a>
 
         <div class="header-actions">
-          <a href="/login" class="login-link" @click="closeMenu">
+          <button type="button" class="login-link" @click="showLogin = true; closeMenu()">
             Přihlásit se
-          </a>
+          </button>
 
           <a
             href="#pokoje"
@@ -77,6 +78,7 @@ function closeMenu() {
       </nav>
     </div>
   </header>
+  <LoginForm v-if="showLogin" />
 </template>
 
 <style scoped>
