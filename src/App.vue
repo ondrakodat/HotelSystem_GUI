@@ -1,14 +1,11 @@
 <script setup lang="ts">
+import HeaderMenu from './components/HeaderMenu.vue';
 import Login from './components/LoginForm.vue'
 import Registration from './components/RegisterForm.vue'
-import Test from './components/Test.vue'
 </script>
 
 <template>
-  <Login />
-  <Registration />
-  <br>
-  <Test />
+  <HeaderMenu />
 </template>
 
 <style scoped>
