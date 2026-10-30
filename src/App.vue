@@ -8,7 +8,6 @@ import router from './router/index.ts';
 <template>
   <HeaderMenu />
     <RouterView />
-
 </template>
 
 <style scoped>

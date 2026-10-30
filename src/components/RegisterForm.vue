@@ -144,7 +144,7 @@ async function register() {
 
         <p class="auth-signup">
           Už máš účet?
-          <a href="/login">Přihlásit se</a>
+         <RouterLink to="/login"> Přihlásit se </RouterLink>
         </p>
       </form>
     </div>

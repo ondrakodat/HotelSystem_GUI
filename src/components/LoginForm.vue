@@ -6,6 +6,7 @@ import './auth.css'
 import { RouterLink } from 'vue-router'
 
 
+
 const email = ref('')
 const secret = ref('')
 const rememberMe = ref(false)
@@ -87,7 +88,7 @@ async function Login() {
         </button>
         
         <p class="auth-signup">
-         <RouterLink to="/register">Zapomněli jste heslo?</RouterLink>
+         <RouterLink to="/reset">Zapomněli jste heslo?</RouterLink>
         </p>
         <p class="auth-signup">
           Nemáš účet?
