@@ -88,7 +88,7 @@ async function Login() {
         </button>
         
         <p class="auth-signup">
-         <RouterLink to="/reset">Zapomněli jste heslo?</RouterLink>
+         <RouterLink to="/resetPassword">Zapomněli jste heslo?</RouterLink>
         </p>
         <p class="auth-signup">
           Nemáš účet?
