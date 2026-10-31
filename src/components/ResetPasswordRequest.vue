@@ -1,5 +1,6 @@
-<script lang="ts">
+<script setup lang="ts">
 import {ref} from 'vue'
+import { RouterLink } from 'vue-router'
 import { resetPasswordRequest } from '@/services/passwordReset';
 const email = ref('')
 const message = ref('')
@@ -32,15 +33,23 @@ async function resetPassword(){
         pro přihlášení. Zašleme vám kód pro obnovení hesla.
       </p>
 
-      <form>
+      <form @submit.prevent="resetPassword">
         <div class="auth-field">
           <input
+            v-model = "email"
             type="email"
             id="email"
             placeholder=" "
+            autocomplete="email"
+            required
           />
           <label for="email">E-mailová adresa</label>
         </div>
+
+         <p v-if="message" role="status">
+          {{ message }}
+        </p>
+
 
         <button type="submit" class="auth-submit">
           Odeslat obnovovací kód
@@ -49,7 +58,7 @@ async function resetPassword(){
 
       <p class="auth-signup">
         Vzpomněli jste si na heslo?
-        <a href="/login">Přihlásit se</a>
+        <RouterLink to="/login">Přihlásit se</RouterLink>
       </p>
 
     </section>
