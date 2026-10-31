@@ -16,4 +16,5 @@ export async function resetPasswordRequest(PasswordResetRequestDto : {
     if(!response.ok){
         throw new Error("Nepodarilo se prihlasit");
     }
+    return response;
 }

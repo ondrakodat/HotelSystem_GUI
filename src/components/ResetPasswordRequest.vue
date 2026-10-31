@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import { RouterLink } from 'vue-router'
+import {useRouter} from 'vue-router'
 import { resetPasswordRequest } from '@/services/passwordReset';
 const email = ref('')
 const message = ref('')
+const router = useRouter()
 async function resetPassword(){
     const passwordResetRequestDto = {
         email: email.value
@@ -13,6 +15,12 @@ async function resetPassword(){
         const response = await resetPasswordRequest(passwordResetRequestDto)
         console.log(response)
         message.value = "Pokud email existuje obdrzite kod pro obnoveni"
+        router.push({
+          path: '/resetPasswordConfirm',
+          query : {email : email.value}
+        })
+        console.log('Aktuální URL:', window.location.href)
+        console.log('Aktuální route:', router.currentRoute.value.fullPath)
     }catch(error){
         message.value = "Kod pro obnoveni nelze vytvorit "
         console.error(error)
