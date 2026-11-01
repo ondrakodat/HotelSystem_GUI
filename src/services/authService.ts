@@ -1,4 +1,5 @@
-import { getCsrfToken } from "./csrfService"
+import {apiFetch} from "./apifetchWithCsrfService"
+import {getCsrfToken} from "./csrfService"
 /**
  * Method for registration new Person in our Hotel system.
  * POST method
@@ -20,15 +21,11 @@ export async function registerPerson(registerDto: {
   phone: string
 }) {
 
-  const crsfToken = await getCsrfToken()
-
-  const response = await fetch('http://localhost:8080/api/auth/register', {
+  const response = await apiFetch('/auth/register', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'X-XSRF-TOKEN': crsfToken
+      'Content-Type': 'application/json'
     },
-    credentials: 'include',
     body: JSON.stringify(registerDto)
   })
 
@@ -40,16 +37,11 @@ export async function loginPerson(AuthDto: {
   email: string
   password: string
 }){
-  const csrfToken = await getCsrfToken()
-
-
-  const response = await fetch('http://localhost:8080/api/auth/login', {
+  const response = await apiFetch('/auth/login', {
     method : 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'X-XSRF-TOKEN': csrfToken
+      'Content-Type': 'application/json'
     },
-    credentials: 'include',
     body: JSON.stringify(AuthDto)
   })
   console.log("Response : " + response.status)
@@ -58,7 +50,8 @@ export async function loginPerson(AuthDto: {
   throw new Error('Přihlášení se nezdařilo')
   }
 
-    const csrfTokenNew = await getCsrfToken()
+  //Reseting token after secusfull login for next requests and better security
+  await getCsrfToken() 
 }
 
 

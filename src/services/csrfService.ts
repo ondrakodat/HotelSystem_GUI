@@ -1,3 +1,5 @@
+export let csrfToken : string | null = null;
+
 export async function getCsrfToken(): Promise<string> {
   const response = await fetch ('http://localhost:8080/api/auth/csrf', {
     method : 'GET',
@@ -5,6 +7,7 @@ export async function getCsrfToken(): Promise<string> {
   })
   if(!response.ok){
     console.log("Response : " + response.status)
+    throw new Error(`Failed to get CSRF token: ${response.status}`);
   }
 
   const csrf = document.cookie
@@ -14,6 +17,10 @@ export async function getCsrfToken(): Promise<string> {
   if(!csrf)
     throw new Error('CSRF token not found in cookies')
 
-  return decodeURIComponent(csrf.substring('XSRF-TOKEN='.length))
+  csrfToken = decodeURIComponent(csrf.substring('XSRF-TOKEN='.length))
+
+
+  return csrfToken;
+
 
 }
