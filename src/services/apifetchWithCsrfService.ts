@@ -30,24 +30,31 @@ const response = await fetch(`${API_URL}${path}`, {
     credentials: 'include'
 }) 
 
-if(!response.ok){
-    const errorTest = await response.text()
+    if(!response.ok){
+        const errorTest = await response.text()
 
-    let error = "Nastala neočekávaná chyba."
+        let error = "Nastala neočekávaná chyba."
+    try {
+        const parsedError = JSON.parse(errorTest);
 
-     try {
-            const parsedError = JSON.parse(errorTest);
-
-            if (typeof parsedError === 'string') {
-                error = parsedError;
-            } else {
-                error = Object.values(parsedError).join(', ');
-            }
-        } catch {
-            error = errorTest || error;
+        if (typeof parsedError === 'string') {
+            error = parsedError;
+        } else if (parsedError.message) {
+            error = parsedError.message;
+        } else if (parsedError.detail) {
+            error = parsedError.detail;
+        } else if (parsedError.error) {
+            error = parsedError.error;
+        } else {
+            error = Object.values(parsedError).join(', ');
         }
 
-        throw new Error(error);
+    } catch {
+        error = errorTest || error;
     }
-    return response
+
+    throw new Error(error);
+
+    }
+return response
 }

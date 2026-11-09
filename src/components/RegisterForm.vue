@@ -39,9 +39,13 @@ async function register() {
     console.log(response.status)
     successMessage.value = 'Registrace proběhla úspěšně.'
   } catch (error) {
-    console.error('Registration failed:', error)
-    errorMessage.value =
-      'Registrace se nezdařila. Zkontroluj údaje nebo to zkus později.'
+     console.error('Registration failed:', error);
+
+    if (error instanceof Error) {
+        errorMessage.value = error.message;
+    } else {
+        errorMessage.value = 'Nastala neočekávaná chyba.';
+    }
   } finally {
     isSubmitting.value = false
   }
