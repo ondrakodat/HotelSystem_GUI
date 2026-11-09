@@ -24,10 +24,30 @@ export async function apiFetch(
     }
 
 
-return fetch(`${API_URL}${path}`, {
+const response = await fetch(`${API_URL}${path}`, {
     ...options,
     headers,
     credentials: 'include'
 }) 
-    
+
+if(!response.ok){
+    const errorTest = await response.text()
+
+    let error = "Nastala neočekávaná chyba."
+
+     try {
+            const parsedError = JSON.parse(errorTest);
+
+            if (typeof parsedError === 'string') {
+                error = parsedError;
+            } else {
+                error = Object.values(parsedError).join(', ');
+            }
+        } catch {
+            error = errorTest || error;
+        }
+
+        throw new Error(error);
+    }
+    return response
 }
