@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import HeaderMenu from './components/HeaderMenu.vue';
 import router from './router/index.ts';
-
+import {createPinia} from 'pinia';
 
 </script>
 

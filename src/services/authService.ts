@@ -1,5 +1,6 @@
 import {apiFetch} from "./apifetchWithCsrfService"
 import {getCsrfToken} from "./csrfService"
+import {useAuthStore} from "../stores/authStores"
 /**
  * Method for registration new Person in our Hotel system.
  * POST method
@@ -47,13 +48,36 @@ export async function loginPerson(AuthDto: {
   })
   console.log("Response : " + response.status)
 
+
+
   if (!response.ok) {
   throw new Error('Přihlášení se nezdařilo')
   }
 
+  const authStore = useAuthStore()
+  authStore.login(AuthDto.email)
+
   //Reseting token after secusfull login for next requests and better security
   await getCsrfToken() 
 }
+
+export async function logoutPerson() {
+  const response = await apiFetch('/auth/logout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (!response.ok) {
+    throw new Error('Odhlášení se nezdařilo')
+  }
+
+  const authStore = useAuthStore()
+  authStore.logout()
+
+}
+
 
 
     
