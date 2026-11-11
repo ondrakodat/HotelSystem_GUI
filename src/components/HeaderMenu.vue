@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import './HeaderMenu.css'
 import {useAuthStore} from "../stores/authStores";
 
@@ -14,6 +14,13 @@ const navigation = [
 ]
 const authStore = useAuthStore()
 
+watch(
+  () => authStore.isAuthenticated,
+  (newValue) => {
+    console.log('Změna autentizace:', newValue)
+  }
+)
+
 function closeMenu() {
   menuOpen.value = false
 }
@@ -21,8 +28,10 @@ function closeMenu() {
 
 <template>
   <header class="hotel-header">
+
+    
+
     <div class="header-container">
-      <!-- Logo hotelu -->
       <a href="#domu" class="hotel-logo" @click="closeMenu">
         <span class="logo-symbol" aria-hidden="true">E</span>
 
@@ -32,7 +41,6 @@ function closeMenu() {
         </span>
       </a>
 
-      <!-- Tlačítko pro mobilní menu -->
       <button
         class="menu-toggle"
         type="button"
@@ -45,7 +53,6 @@ function closeMenu() {
         <span></span>
       </button>
 
-      <!-- Navigace -->
       <nav
         class="header-navigation"
         :class="{ 'navigation-open': menuOpen }"
@@ -62,7 +69,23 @@ function closeMenu() {
         </a>
 
         <div class="header-actions">
-            <RouterLink to="/login"   class="nav-link" @click="closeMenu"> Přihlásit se </RouterLink>
+            <RouterLink
+                v-if="!authStore.isAuthenticated"
+                to="/login"
+                class="login-link"
+                @click="closeMenu"
+              >
+                Přihlásit se
+              </RouterLink>
+
+              <RouterLink
+                v-else
+                to="/profile"
+                class="login-link"
+                @click="closeMenu"
+              >
+                Můj profil
+              </RouterLink>
 
           <a
             href="#pokoje"

@@ -27,7 +27,7 @@ async function register() {
   isSubmitting.value = true
 
   const registerDto = {
-    username: username.value,
+    firstname: username.value,
     lastname: surname.value,
     email: email.value,
     hashedSecret: password.value,

@@ -15,7 +15,7 @@ import {useAuthStore} from "../stores/authStores"
 // name ({}){ body of method }
 // response = await fetch(url, {Method Type, headers, body})
 export async function registerPerson(registerDto: {
-  username: string
+  firstname: string
   lastname: string
   email: string
   hashedSecret: string
@@ -47,8 +47,6 @@ export async function loginPerson(AuthDto: {
     body: JSON.stringify(AuthDto)
   })
   console.log("Response : " + response.status)
-
-
 
   if (!response.ok) {
   throw new Error('Přihlášení se nezdařilo')
