@@ -3,7 +3,7 @@
 import { ref } from 'vue'
 import { loginPerson } from '../services/authService'
 import './auth.css'
-import { RouterLink } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 
 
 
@@ -12,6 +12,7 @@ const secret = ref('')
 const rememberMe = ref(false)
 const errorMessage = ref('')
 const isSubmitting = ref(false)
+const router = useRouter()
 
 async function Login() {
   errorMessage.value = ''
@@ -19,12 +20,16 @@ async function Login() {
 
   const AuthDto = {
     email: email.value,
-    password: secret.value
+    password: secret.value,
+    rememberMe: rememberMe.value
   }
 
   try {
+    console.log('AuthDto:', AuthDto)
+    console.log('JSON:', JSON.stringify(AuthDto))
     const response = await loginPerson(AuthDto)
     console.log('Přihlášení proběhlo úspěšně', response)
+    await router.push({ path: '/' })
   } catch (error) {
     console.error('Chyba při přihlášení:', error)
     errorMessage.value = 'Přihlášení se nezdařilo. '

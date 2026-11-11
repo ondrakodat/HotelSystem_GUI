@@ -54,11 +54,13 @@ export async function loginPerson(AuthDto: {
   throw new Error('Přihlášení se nezdařilo')
   }
 
+  //Reseting token after secusfull login for next requests and better security
+  await getCsrfToken() 
+
   const authStore = useAuthStore()
   authStore.login(AuthDto.email)
 
-  //Reseting token after secusfull login for next requests and better security
-  await getCsrfToken() 
+  return response
 }
 
 export async function logoutPerson() {
@@ -76,6 +78,7 @@ export async function logoutPerson() {
   const authStore = useAuthStore()
   authStore.logout()
 
+  return response
 }
 
 

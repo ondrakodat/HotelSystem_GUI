@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import './HeaderMenu.css'
+import {useAuthStore} from "../stores/authStores";
 
 const menuOpen = ref(false)
 const navigation = [
@@ -11,6 +12,7 @@ const navigation = [
   { label: 'Wellness', href: '#wellness' },
   { label: 'Kontakt', href: '#kontakt' },
 ]
+const authStore = useAuthStore()
 
 function closeMenu() {
   menuOpen.value = false
