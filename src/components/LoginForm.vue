@@ -27,7 +27,7 @@ async function Login() {
     console.log('Přihlášení proběhlo úspěšně', response)
   } catch (error) {
     console.error('Chyba při přihlášení:', error)
-    errorMessage.value = 'Přihlášení se nezdařilo. Zkontroluj své údaje.'
+    errorMessage.value = 'Přihlášení se nezdařilo. '
   } finally {
     isSubmitting.value = false
   }

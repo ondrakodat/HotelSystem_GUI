@@ -1,4 +1,6 @@
 import { csrfToken, getCsrfToken } from './csrfService';
+import { RateLimitError } from './rateLimitError';
+
 const API_URL = 'http://localhost:8080/api';
 
 export async function apiFetch(
@@ -29,7 +31,19 @@ const response = await fetch(`${API_URL}${path}`, {
     headers,
     credentials: 'include'
 }) 
+    if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After');
 
+        const retryAfterSeconds = retryAfter
+            ? Number(retryAfter)
+            : 0;
+
+        throw new RateLimitError(
+            Number.isFinite(retryAfterSeconds)
+                ? Math.max(0, retryAfterSeconds)
+                : 0
+        );
+    }
     if(!response.ok){
         const errorTest = await response.text()
 

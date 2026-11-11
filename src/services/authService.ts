@@ -36,6 +36,7 @@ export async function registerPerson(registerDto: {
 export async function loginPerson(AuthDto: {
   email: string
   password: string
+  rememberMe: boolean
 }){
   const response = await apiFetch('/auth/login', {
     method : 'POST',
