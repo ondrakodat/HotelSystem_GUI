@@ -4,7 +4,7 @@ export async function resetPasswordRequest(PasswordResetRequestDto : {
     email : string
 }) {
     const csrfToken = await getCsrfToken();
-    const response = await fetch('http://localhost:8080/api/auth/resetPassword/requestForReset',{
+    const response = await fetch('/api/auth/resetPassword/requestForReset',{
         method : 'POST',
         headers : {
             'Content-Type': 'application/json',

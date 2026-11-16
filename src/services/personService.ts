@@ -1,5 +1,5 @@
 export async function testLoginIn(){
-  const response = await fetch('http://localhost:8080/api/person/test', {
+  const response = await fetch('/api/person/test', {
     method : 'GET',
     credentials: 'include'
   })

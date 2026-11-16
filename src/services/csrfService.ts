@@ -1,7 +1,7 @@
 export let csrfToken : string | null = null;
 
 export async function getCsrfToken(): Promise<string> {
-  const response = await fetch ('http://localhost:8080/api/auth/csrf', {
+  const response = await fetch ('/api/auth/csrf', {
     method : 'GET',
     credentials: 'include'
   })

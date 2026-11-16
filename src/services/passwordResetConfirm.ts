@@ -7,7 +7,7 @@ export async function confirmPasswordReset(passwordResetConfirmDto : {
     password : string 
 }){
     const csrfToken = await getCsrfToken();
-    const response =await fetch('http://localhost:8080/api/auth/resetPassword/confirmReset', {
+    const response =await fetch('/api/auth/resetPassword/confirmReset', {
            method : 'POST',
            headers : {
                 'Content-Type' : 'application/JSON',

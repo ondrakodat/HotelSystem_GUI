@@ -2,7 +2,7 @@
 import {confirmPasswordReset} from '@/services/passwordResetConfirm'
 import {ref} from 'vue'
 import { useRoute } from 'vue-router'
-import './Auth.css'
+import './auth.css'
 
 const route = useRoute()
 const email = ref(String(route.query.email ?? ''))
