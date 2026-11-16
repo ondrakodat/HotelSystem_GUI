@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { loadUserProfile } from '../services/loadUserProfile'
+import { logoutPerson} from '../services/authService'
 
 const email = ref('') ?? ":)"
 const firstname = ref('') ?? ":)"
@@ -88,10 +89,10 @@ onMounted(() => {
 
         </div>
 
-        <!-- Odhlášení -->
         <button
           class="profile-logout"
           type="button"
+          @click="logoutPerson"
         >
           Odhlásit se
         </button>

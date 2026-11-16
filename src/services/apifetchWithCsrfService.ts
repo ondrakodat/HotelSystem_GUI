@@ -1,7 +1,7 @@
 import { csrfToken, getCsrfToken } from './csrfService';
 import { RateLimitError } from './rateLimitError';
 
-const API_URL = 'http://localhost:8080/api';
+const API_URL = '/api';
 
 export async function apiFetch(
     path: string,
