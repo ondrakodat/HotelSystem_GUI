@@ -6,11 +6,11 @@ import {useAuthStore} from "../stores/authStores";
 
 const menuOpen = ref(false)
 const navigation = [
-  { label: 'Domů', href: '#domu' },
-  { label: 'Pokoje', href: '#pokoje' },
-  { label: 'Restaurace', href: '#restaurace' },
-  { label: 'Wellness', href: '#wellness' },
-  { label: 'Kontakt', href: '#kontakt' },
+  { label: 'Domů', href: '/#domu' },
+  { label: 'Pokoje', href: '/#pokoje' },
+  { label: 'Restaurace', href: '/#restaurace' },
+  { label: 'Wellness', href: '/#wellness' },
+  { label: 'Kontakt', href: '/#kontakt' },
 ]
 const authStore = useAuthStore()
 
@@ -32,14 +32,14 @@ function closeMenu() {
     
 
     <div class="header-container">
-      <a href="#domu" class="hotel-logo" @click="closeMenu">
+      <RouterLink to="/" class="hotel-logo" @click="closeMenu">
         <span class="logo-symbol" aria-hidden="true">E</span>
 
         <span class="logo-text">
           <span class="logo-name">HOTEL ELEMENT</span>
           <span class="logo-subtitle">MÍSTO PRO VÁŠ ODPOČINEK</span>
         </span>
-      </a>
+      </RouterLink>
 
       <button
         class="menu-toggle"
@@ -58,15 +58,15 @@ function closeMenu() {
         :class="{ 'navigation-open': menuOpen }"
         aria-label="Hlavní navigace"
       >
-        <a
+        <RouterLink
           v-for="item in navigation"
           :key="item.href"
-          :href="item.href"
+          :to="item.href"
           class="nav-link"
           @click="closeMenu"
         >
           {{ item.label }}
-        </a>
+        </RouterLink>
 
         <div class="header-actions">
             <RouterLink
@@ -87,14 +87,14 @@ function closeMenu() {
                 Můj profil
               </RouterLink>
 
-          <a
-            href="#pokoje"
+          <RouterLink
+            to="/#pokoje"
             class="reservation-button"
             @click="closeMenu"
           >
             Rezervovat pobyt
             <span aria-hidden="true">→</span>
-          </a>
+            </RouterLink>
         </div>
       </nav>
     </div>
