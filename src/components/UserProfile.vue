@@ -2,11 +2,23 @@
 import { ref, onMounted } from 'vue'
 import { loadUserProfile } from '../services/loadUserProfile'
 import { logoutPerson} from '../services/authService'
+import { useRouter } from 'vue-router'
+
 
 const email = ref('') ?? ":)"
 const firstname = ref('') ?? ":)"
 const lastName = ref('') ?? ":)"
 const loading = ref(true)
+const router = useRouter()
+
+
+
+async function handleLogout(){
+  await logoutPerson()
+  await router.push({ path: '/' })
+
+}
+
 
 async function loadProfile() {
   try {
@@ -92,7 +104,7 @@ onMounted(() => {
         <button
           class="profile-logout"
           type="button"
-          @click="logoutPerson"
+          @click="handleLogout"
         >
           Odhlásit se
         </button>
