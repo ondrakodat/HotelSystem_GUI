@@ -14,6 +14,9 @@ const errorMessage = ref('')
 const isSubmitting = ref(false)
 const router = useRouter()
 
+
+
+
 async function Login() {
   errorMessage.value = ''
   isSubmitting.value = true
@@ -25,8 +28,6 @@ async function Login() {
   }
 
   try {
-    console.log('AuthDto:', AuthDto)
-    console.log('JSON:', JSON.stringify(AuthDto))
     const response = await loginPerson(AuthDto)
     console.log('Přihlášení proběhlo úspěšně', response)
     await router.push({ path: '/' })
