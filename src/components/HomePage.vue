@@ -1,1153 +1,436 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue'
 
-<script setup>
-import { ref } from 'vue'
-
-// Aktuální slide restaurací
 const restaurantSlide = ref(0)
-
-// Aktuální slide wellness
 const wellnessSlide = ref(0)
 
-// Restaurace
 const restaurants = [
   {
-    name: 'Restaurace Horizont',
+    name: 'Horizont',
+    eyebrow: 'Lokální kuchyně · večerní menu',
     description:
-      'Restaurace Horizont zve k dokonalému kulinářskému zážitku v moderním prostředí s jedinečnou atmosférou. Nabízí pestrý výběr pokrmů inspirovaných mezinárodní i českou kuchyní, připravovaných z čerstvých lokálních surovin.',
+      'Otevřená kuchyně, suroviny od regionálních dodavatelů a menu, které se mění s ročním obdobím. Horizont je neformální přes den a intimní po setmění.',
     image: '/images/Restaurace_Horizont/Horizont_Pozadi.jpg',
-    link: '#kontakt'
   },
   {
-    name: 'Restaurace Panorama',
+    name: 'Panorama',
+    eyebrow: 'Výhled · snídaně · signature bar',
     description:
-      'Restaurace Panorama nabízí jedinečný gastronomický zážitek s výhledem na malebnou krajinu. Naši kuchaři připravují pokrmy z čerstvých lokálních surovin, inspirované moderní i tradiční kuchyní.',
+      'Ráno začíná dlouhou snídaní a výhledem do krajiny. Večer prostor patří degustačnímu menu, vybraným vínům a klidné atmosféře hotelového baru.',
     image: '/images/Restaurace_Panorama/Panorama_pozadi.jpg',
-    link: '#kontakt'
-  }
+  },
 ]
 
-// Pokoje
 const rooms = [
   {
     name: 'Jednolůžkový pokoj',
-    description:
-      'Kompaktní pokoj pro jednu osobu s jednolůžkem, pracovním stolem a základním vybavením.',
-    image: '/images/Jednoluzkovy/Jednoluzkovy.jpg'
+    meta: 'Pro klidný sólo pobyt',
+    description: 'Promyšlený prostor s pracovním místem a výhledem do okolní krajiny.',
+    image: '/images/Jednoluzkovy/Jednoluzkovy.jpg',
   },
   {
     name: 'Dvoulůžkový pokoj',
-    description:
-      'Pokoj s manželskou postelí nebo dvěma oddělenými postelemi. Ideální pro páry nebo dvojice.',
-    image: '/images/Dvouluzkovy/Dvouluzkovy.jpg'
+    meta: 'Pro dva',
+    description: 'Měkké textilie, velká postel a dostatek soukromí pro společný odpočinek.',
+    image: '/images/Dvouluzkovy/Dvouluzkovy.jpg',
   },
   {
     name: 'Studio',
-    description:
-      'Otevřený prostor kombinující ložnici a obývací část. Vhodné pro páry nebo malé rodiny.',
-    image: '/images/Studio/Studio.jpg'
+    meta: 'Pro delší zastavení',
+    description: 'Vzdušný pokoj s obytnou částí pro páry i malé rodiny.',
+    image: '/images/Studio/Studio.jpg',
   },
   {
     name: 'Apartmá',
-    description:
-      'Prostorný pokoj s oddělenou ložnicí a obývací částí. Ideální pro rodiny a delší pobyty.',
-    image: '/images/Apartma/Apartma.jpg'
-  }
+    meta: 'Nejvíce prostoru',
+    description: 'Oddělená ložnice, obývací část a soukromí pro pomalé dny.',
+    image: '/images/Apartma/Apartma.jpg',
+  },
 ]
 
-// Wellness
 const wellness = [
   {
-    name: 'Bazén',
-    description:
-      'Krytý bazén s průzračně čistou vodou, brouzdalištěm pro děti a odpočinkovou zónou.',
-    image: '/images/Bazen/Bazen_Vnitrni.jpg'
+    name: 'Vodní svět',
+    shortName: 'Bazény',
+    description: 'Vnitřní bazén, dětské brouzdaliště a venkovní voda obklopená zelení.',
+    image: '/images/Bazen/Bazen_Vnitrni.jpg',
   },
   {
-    name: 'Masáže',
-    description:
-      'Dopřejte si okamžik klidu a uvolnění. Zkušené ruce masérů vás přenesou do světa relaxace.',
-    image: '/images/Maserna/Maserna.jpg'
+    name: 'Saunový rituál',
+    shortName: 'Sauny',
+    description: 'Prohřátí, ochlazení a ticho. Několik typů saun pro váš vlastní rytmus.',
+    image: '/images/Sauny/Sauna.jpg',
   },
   {
-    name: 'Sauna',
-    description:
-      'Nechte své tělo prohřát v jemném teple sauny a vychutnejte si pocit naprostého klidu.',
-    image: '/images/Sauny/Sauna.jpg'
+    name: 'Dotek a regenerace',
+    shortName: 'Masáže',
+    description: 'Individuální masáže a rituály sestavené podle toho, co právě potřebujete.',
+    image: '/images/Maserna/Maserna.jpg',
   },
   {
-    name: 'Fitness',
-    description:
-      'Moderně vybavené fitness centrum pro udržení kondice i aktivní odpočinek.',
-    image: '/images/Fitness/Fitness_Pohled.jpg'
+    name: 'Pohyb s výhledem',
+    shortName: 'Fitness',
+    description: 'Moderní vybavení, dostatek denního světla a prostor pro soustředěný pohyb.',
+    image: '/images/Fitness/Fitness_Pohled.jpg',
   },
-  {
-    name: 'Venkovní bazén',
-    description:
-      'Sluneční terasa s lehátky, osvěžující voda a ideální prostor pro letní relaxaci.',
-    image: '/images/Bazen/Bazen_Venkovni.jpg'
-  }
 ]
 
-// Přechod na další restauraci
-const nextRestaurant = () => {
-  restaurantSlide.value =
-    (restaurantSlide.value + 1) % restaurants.length
+const currentRestaurant = computed(() => restaurants[restaurantSlide.value] ?? restaurants[0]!)
+const currentWellness = computed(() => wellness[wellnessSlide.value] ?? wellness[0]!)
+
+function previousRestaurant() {
+  restaurantSlide.value = (restaurantSlide.value - 1 + restaurants.length) % restaurants.length
 }
 
-// Přechod na předchozí restauraci
-const previousRestaurant = () => {
-  restaurantSlide.value =
-    (restaurantSlide.value - 1 + restaurants.length) % restaurants.length
-}
-
-// Přechod na další wellness
-const nextWellness = () => {
-  wellnessSlide.value =
-    (wellnessSlide.value + 1) % wellness.length
-}
-
-// Přechod na předchozí wellness
-const previousWellness = () => {
-  wellnessSlide.value =
-    (wellnessSlide.value - 1 + wellness.length) % wellness.length
+function nextRestaurant() {
+  restaurantSlide.value = (restaurantSlide.value + 1) % restaurants.length
 }
 </script>
 
 <template>
   <main class="home-page">
-
-    <!-- HERO -->
-    <section id="domu" class="hero">
-
-      <video
-        class="hero-video"
-        autoplay
-        muted
-        loop
-        playsinline
-        poster="/images/Hotel_pozadi.jpg"
-      >
-        <source
-          src="/videos/Pozadi_Stranky.mp4"
-          type="video/mp4"
-        />
+    <section id="domu" class="hero" aria-labelledby="hero-title">
+      <video class="hero-media" autoplay muted loop playsinline poster="/images/Hotel_pozadi.jpg">
+        <source src="/videos/Pozadi_Stranky.mp4" type="video/mp4" />
       </video>
+      <div class="hero-shade"></div>
 
-      <div class="hero-overlay"></div>
-
-      <div class="hero-content">
-        <span class="hero-subtitle">WELLNESS HOTEL ELEMENT</span>
-
-        <h1>
-          Vítejte v místě,<br />
-          kde se čas zpomalí.
-        </h1>
-
-        <p>
-          Dopřejte si klid, pohodlí a výjimečné zážitky
-          v srdci přírody.
-        </p>
-
-        <a href="#pokoje" class="hotel-button">
-          Objevte náš hotel
-        </a>
+      <div class="hero-copy">
+        <p class="eyebrow eyebrow--light">Wellness hotel · Pardubice</p>
+        <h1 id="hero-title">Prostor pro<br /><em>opravdové</em> zastavení.</h1>
+        <div class="hero-bottom">
+          <p>Současný hotel, živá gastronomie a wellness ukryté v klidné krajině.</p>
+          <a class="outline-link outline-link--light" href="#pokoje">Objevit Element</a>
+        </div>
       </div>
 
-      <a href="#restaurace" class="hero-scroll">
-        <span>Objevte více</span>
-        <span class="scroll-arrow">↓</span>
+      <a class="scroll-cue" href="#uvod" aria-label="Pokračovat na úvod">
+        <span></span>
+        Posunout níž
       </a>
-
     </section>
 
-
-    <!-- RESTAURACE -->
-    <section id="restaurace" class="home-section">
-
-      <div class="section-heading">
-        <span>GASTRONOMIE</span>
-        <h2>Naše restaurace</h2>
-        <p>
-          Vychutnejte si jedinečné gastronomické zážitky
-          v příjemném prostředí našeho hotelu.
-        </p>
-      </div>
-
-      <div class="showcase">
-
-        <button
-          class="slide-arrow left"
-          @click="previousRestaurant"
-          aria-label="Předchozí restaurace"
-        >
-          ‹
-        </button>
-
-        <div class="showcase-image">
-
-          <Transition name="image-transition" mode="out-in">
-            <img
-              :key="restaurants[restaurantSlide].image"
-              :src="restaurants[restaurantSlide].image"
-              :alt="restaurants[restaurantSlide].name"
-            />
-          </Transition>
-
-        </div>
-
-        <div class="showcase-content">
-
-          <Transition name="content-transition" mode="out-in">
-            <div :key="restaurantSlide">
-
-              <span class="content-number">
-                0{{ restaurantSlide + 1 }} / 02
-              </span>
-
-              <h3>{{ restaurants[restaurantSlide].name }}</h3>
-
-              <p>
-                {{ restaurants[restaurantSlide].description }}
-              </p>
-
-              <a
-                :href="restaurants[restaurantSlide].link"
-                class="hotel-button"
-              >
-                Více informací
-              </a>
-
-            </div>
-          </Transition>
-
-          <div class="slide-dots">
-            <button
-              v-for="(_, index) in restaurants"
-              :key="index"
-              :class="{ active: restaurantSlide === index }"
-              @click="restaurantSlide = index"
-              :aria-label="`Restaurace ${index + 1}`"
-            ></button>
-          </div>
-
-        </div>
-
-        <button
-          class="slide-arrow right"
-          @click="nextRestaurant"
-          aria-label="Další restaurace"
-        >
-          ›
-        </button>
-
+    <section id="uvod" class="manifesto page-section">
+      <p class="eyebrow">Náš přístup</p>
+      <p class="manifesto-text">
+        Nejsme hotel, kterým jen projdete. Element je místo, které si zapamatujete podle
+        <em>ranního světla</em>, vůně dobrého jídla a ticha, na které doma nezbývá čas.
+      </p>
+      <div class="manifesto-note">
+        <span>Pobyt podle vašeho tempa</span>
+        <p>Od víkendového úniku po dlouhé prázdniny. Každý detail tu má nechat více prostoru vám.</p>
       </div>
     </section>
 
-
-    <!-- POKOJE -->
-    <section id="pokoje" class="home-section rooms-section">
-
-      <div class="section-heading">
-        <span>UBYTOVÁNÍ</span>
-        <h2>Naše pokoje</h2>
-        <p>
-          Vyberte si ubytování, které bude odpovídat
-          vašim představám o dokonalém odpočinku.
-        </p>
+    <section id="pokoje" class="stays page-section page-section--dark" aria-labelledby="rooms-title">
+      <div class="section-intro section-intro--light">
+        <div>
+          <p class="eyebrow eyebrow--light">Ubytování</p>
+          <h2 id="rooms-title">Vyberte si svůj<br />způsob odpočinku.</h2>
+        </div>
+        <p>Čtyři typy pokojů. Stejný důraz na pohodlí, přirozené materiály a klid.</p>
       </div>
 
-      <div class="rooms-grid">
-
-        <article
-          v-for="(room, index) in rooms"
-          :key="room.name"
-          class="room-card"
-        >
-
-          <div class="room-image">
-            <img :src="room.image" :alt="room.name" />
-          </div>
-
-          <div class="room-content">
-
-            <span class="room-number">
-              0{{ index + 1 }}
-            </span>
-
+      <div class="room-list">
+        <article v-for="room in rooms" :key="room.name" class="room-card">
+          <img :src="room.image" :alt="room.name" loading="lazy" />
+          <div class="room-shade"></div>
+          <div class="room-meta">
+            <p>{{ room.meta }}</p>
             <h3>{{ room.name }}</h3>
-
-            <p>{{ room.description }}</p>
-
-            <a href="#kontakt" class="text-link">
-              Více informací →
-            </a>
-
+            <span>{{ room.description }}</span>
           </div>
+          <a href="#kontakt" :aria-label="`Zjistit více o pokoji ${room.name}`">Zjistit více</a>
         </article>
-
       </div>
     </section>
 
-
-    <!-- WELLNESS -->
-    <section id="wellness" class="home-section wellness-section">
-
-      <div class="section-heading">
-        <span>RELAXACE A ODPOČINEK</span>
-        <h2>Wellness & Relax</h2>
-        <p>
-          Dopřejte svému tělu i mysli zasloužený odpočinek.
-        </p>
+    <section id="restaurace" class="dining page-section" aria-labelledby="dining-title">
+      <div class="section-intro">
+        <div>
+          <p class="eyebrow">Gastronomie</p>
+          <h2 id="dining-title">Chuť, kvůli které<br />se budete vracet.</h2>
+        </div>
+        <div class="section-sidecopy">
+          <p>Dvě restaurace, dva odlišné pohledy na sezónní kuchyni a jeden společný základ: poctivé suroviny.</p>
+          <a class="outline-link" href="#kontakt">Rezervovat stůl</a>
+        </div>
       </div>
 
-      <div class="showcase wellness-showcase">
-
-        <button
-          class="slide-arrow left"
-          @click="previousWellness"
-          aria-label="Předchozí wellness"
-        >
-          ‹
-        </button>
-
-        <div class="showcase-image">
-
-          <Transition name="image-transition" mode="out-in">
+      <div class="dining-feature">
+        <div class="dining-image">
+          <Transition name="media-swap" mode="out-in">
             <img
-              :key="wellness[wellnessSlide].image"
-              :src="wellness[wellnessSlide].image"
-              :alt="wellness[wellnessSlide].name"
+              :key="currentRestaurant.image"
+              :src="currentRestaurant.image"
+              :alt="`Restaurace ${currentRestaurant.name}`"
+              loading="lazy"
             />
           </Transition>
-
         </div>
 
-        <div class="showcase-content">
-
-          <Transition name="content-transition" mode="out-in">
-            <div :key="wellnessSlide">
-
-              <span class="content-number">
-                0{{ wellnessSlide + 1 }} / 05
-              </span>
-
-              <h3>{{ wellness[wellnessSlide].name }}</h3>
-
-              <p>
-                {{ wellness[wellnessSlide].description }}
-              </p>
-
-              <a href="#kontakt" class="hotel-button">
-                Více informací
-              </a>
-
+        <div class="dining-copy">
+          <Transition name="copy-swap" mode="out-in">
+            <div :key="currentRestaurant.name">
+              <p class="eyebrow">{{ currentRestaurant.eyebrow }}</p>
+              <h3>{{ currentRestaurant.name }}</h3>
+              <p class="body-copy">{{ currentRestaurant.description }}</p>
             </div>
           </Transition>
 
-          <div class="slide-dots">
-            <button
-              v-for="(_, index) in wellness"
-              :key="index"
-              :class="{ active: wellnessSlide === index }"
-              @click="wellnessSlide = index"
-              :aria-label="`Wellness ${index + 1}`"
-            ></button>
+          <div class="slider-controls">
+            <button type="button" @click="previousRestaurant">Předchozí</button>
+            <div class="slider-dots" aria-label="Výběr restaurace">
+              <button
+                v-for="(restaurant, index) in restaurants"
+                :key="restaurant.name"
+                type="button"
+                :class="{ active: restaurantSlide === index }"
+                :aria-label="`Zobrazit restauraci ${restaurant.name}`"
+                :aria-current="restaurantSlide === index ? 'true' : undefined"
+                @click="restaurantSlide = index"
+              ></button>
+            </div>
+            <button type="button" @click="nextRestaurant">Další</button>
           </div>
-
         </div>
+      </div>
+    </section>
 
+    <section id="wellness" class="wellness page-section" aria-labelledby="wellness-title">
+      <div class="wellness-heading">
+        <p class="eyebrow eyebrow--light">Wellness & pohyb</p>
+        <h2 id="wellness-title">Zpomalit.<br /><em>Vydechnout.</em><br />Začít znovu.</h2>
+      </div>
+
+      <div class="wellness-stage">
+        <Transition name="media-swap" mode="out-in">
+          <img
+            :key="currentWellness.image"
+            :src="currentWellness.image"
+            :alt="currentWellness.name"
+            loading="lazy"
+          />
+        </Transition>
+        <div class="wellness-caption">
+          <h3>{{ currentWellness.name }}</h3>
+          <p>{{ currentWellness.description }}</p>
+        </div>
+      </div>
+
+      <div class="wellness-tabs" role="tablist" aria-label="Wellness služby">
         <button
-          class="slide-arrow right"
-          @click="nextWellness"
-          aria-label="Další wellness"
+          v-for="(item, index) in wellness"
+          :key="item.name"
+          type="button"
+          role="tab"
+          :aria-selected="wellnessSlide === index"
+          :class="{ active: wellnessSlide === index }"
+          @click="wellnessSlide = index"
         >
-          ›
+          {{ item.shortName }}
         </button>
-
       </div>
     </section>
 
-
-    <!-- RECENZE -->
-    <section id="recenze" class="home-section reviews-section">
-
-      <div class="section-heading">
-        <span>NAŠI HOSTÉ</span>
-        <h2>Co o nás říkají</h2>
-        <p>
-          Spokojenost našich hostů je pro nás na prvním místě.
-        </p>
+    <section id="o-hotelu" class="story page-section" aria-labelledby="story-title">
+      <div class="story-image">
+        <img src="/images/Lobby.jpg" alt="Lobby hotelu Element" loading="lazy" />
       </div>
-
-      <div class="reviews-placeholder">
-
-        <span>★★★★★</span>
-
+      <div class="story-copy">
+        <p class="eyebrow">Hotel Element</p>
+        <h2 id="story-title">Pohostinnost bez zbytečných gest.</h2>
         <p>
-          Vaše hodnocení nám pomáhají neustále zlepšovat
-          kvalitu našich služeb.
+          Vytvořili jsme hotel, kde se současný design potkává s lidským přístupem. Méně okázalosti,
+          více pozornosti. Méně spěchu, více času na věci, které mají smysl.
         </p>
-
-        <small>Recenze hostů budou brzy k dispozici.</small>
-
+        <a class="outline-link" href="#kontakt">Poznat náš příběh</a>
       </div>
     </section>
 
-
-    <!-- O HOTELU -->
-    <section id="o-hotelu" class="home-section about-section">
-
-      <div class="about-image">
-        <img
-          src="/images/Hotel_pozadi.jpg"
-          alt="Hotel Element"
-        />
+    <section id="kontakt" class="contact" aria-labelledby="contact-title">
+      <div class="contact-top">
+        <p class="eyebrow eyebrow--light">Váš pobyt začíná tady</p>
+        <h2 id="contact-title">Tak kdy přijedete?</h2>
+        <a class="outline-link outline-link--light" href="mailto:ondrej.kodat@seznam.cz">Napsat hotelu</a>
       </div>
 
-      <div class="about-content">
-
-        <span>HOTEL ELEMENT</span>
-
-        <h2>
-          Místo, kde se komfort setkává s harmonií přírody.
-        </h2>
-
-        <p>
-          Hotel Element je zasazen do klidného prostředí,
-          kde se moderní design snoubí s atmosférou pohodlí
-          a nerušeného odpočinku.
-        </p>
-
-        <p>
-          Našim hostům nabízíme prostor, který spojuje
-          kvalitní služby, příjemné prostředí a výjimečné
-          zážitky.
-        </p>
-
-        <a href="#kontakt" class="hotel-button">
-          Kontaktujte nás
-        </a>
-
-      </div>
-    </section>
-
-
-    <!-- KONTAKT -->
-    <section id="kontakt" class="contact-section">
-
-      <div class="section-heading">
-        <span>JSME TU PRO VÁS</span>
-        <h2>Kontakt</h2>
-      </div>
-
-      <div class="contact-grid">
-
+      <div class="contact-details">
         <div>
-          <span class="contact-icon">⌖</span>
-          <h3>Adresa</h3>
-          <p>Pardubice, Sladkovického 1882</p>
+          <span>Adresa</span>
+          <p>Sladkovského 1882<br />Pardubice</p>
         </div>
-
         <div>
-          <span class="contact-icon">☎</span>
-          <h3>Telefon</h3>
-          <p>721 576 003</p>
+          <span>Kontakt</span>
+          <a href="tel:+420721576003">+420 721 576 003</a>
+          <a href="mailto:ondrej.kodat@seznam.cz">ondrej.kodat@seznam.cz</a>
         </div>
-
         <div>
-          <span class="contact-icon">✉</span>
-          <h3>E-mail</h3>
-          <p>ondrej.kodat@seznam.cz</p>
+          <span>Recepce</span>
+          <p>Každý den<br />nonstop</p>
         </div>
-
       </div>
     </section>
 
-
-    <!-- PATIČKA -->
-    <footer class="home-footer">
-
-      <div>
-        <h3>HOTEL ELEMENT</h3>
-        <p>Vaše místo pro dokonalý odpočinek.</p>
-      </div>
-
+    <footer class="footer">
+      <RouterLink to="/#domu" class="footer-brand">ELEMENT</RouterLink>
       <div class="footer-links">
-        <a href="#domu">Domů</a>
         <a href="#pokoje">Pokoje</a>
-        <a href="#restaurace">Restaurace</a>
+        <a href="#restaurace">Gastronomie</a>
         <a href="#wellness">Wellness</a>
         <a href="#kontakt">Kontakt</a>
       </div>
-
-      <small>
-        © 2026 Hotel Element. Všechna práva vyhrazena.
-      </small>
-
+      <p>© 2026 Hotel Element · Pardubice</p>
     </footer>
-
   </main>
 </template>
 
 <style scoped>
 .home-page {
-  --brown: #915d3f;
-  --brown-dark: #6e3c21;
-  --text-dark: #38190b;
-  --text-light: #4a3a30;
-  --cream: #f8f4f0;
-  --white: #ffffff;
-
-  color: var(--text-light);
-  overflow: hidden;
-  scroll-behavior: smooth;
-}
-
-/* HERO */
-
-.hero {
-  position: relative;
-  min-height: 680px;
-  height: 85vh;
-  max-height: 900px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: white;
-  overflow: hidden;
-}
-
-.hero-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  animation: heroZoom 18s ease-in-out infinite alternate;
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    rgba(0, 0, 0, 0.35),
-    rgba(0, 0, 0, 0.55)
-  );
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  padding: 25px;
-  animation: heroFadeIn 1.2s ease both;
-}
-
-.hero-subtitle,
-.section-heading span,
-.about-content > span {
-  color: #c49a6c;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 4px;
-}
-
-.hero-content h1 {
-  font-size: clamp(2.5rem, 5vw, 5rem);
-  font-weight: 500;
-  margin: 25px 0;
-  line-height: 1.2;
-}
-
-.hero-content p {
-  font-size: 1.15rem;
-  margin-bottom: 35px;
-}
-
-.hero-scroll {
-  position: absolute;
-  bottom: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  color: white;
-  text-decoration: none;
-  font-size: 0.85rem;
-  z-index: 2;
-}
-
-.scroll-arrow {
-  animation: scrollBounce 1.8s ease-in-out infinite;
-}
-
-/* BUTTON */
-
-.hotel-button {
-  display: inline-block;
-  background: var(--brown);
-  color: white;
-  text-decoration: none;
-  border-radius: 999px;
-  padding: 13px 28px;
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease,
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-  border: 1px solid var(--brown);
-}
-
-.hotel-button:hover {
-  background: var(--brown-dark);
-  border-color: var(--brown-dark);
-  color: white;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(110, 60, 33, 0.2);
-}
-
-/* SECTIONS */
-
-.home-section {
-  padding: 90px 7%;
-}
-
-.section-heading {
-  text-align: center;
-  max-width: 700px;
-  margin: 0 auto 55px;
-}
-
-.section-heading h2 {
-  color: var(--text-dark);
-  font-size: clamp(2rem, 4vw, 3rem);
-  margin: 15px 0;
-  font-weight: 500;
-}
-
-.section-heading p {
-  line-height: 1.8;
-  color: #78695e;
-}
-
-/* SHOWCASE */
-
-.showcase {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  align-items: center;
-  max-width: 1200px;
-  margin: auto;
-  gap: 55px;
-}
-
-.showcase-image {
-  height: 440px;
-  overflow: hidden;
-  border-radius: 18px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-  position: relative;
-}
-
-.showcase-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* ANIMACE OBRÁZKŮ */
-
-.image-transition-enter-active {
-  transition:
-    opacity 0.65s ease,
-    transform 0.8s cubic-bezier(0.2, 0.7, 0.3, 1);
-}
-
-.image-transition-leave-active {
-  transition:
-    opacity 0.35s ease,
-    transform 0.4s ease;
-}
-
-.image-transition-enter-from {
-  opacity: 0;
-  transform: scale(1.07);
-}
-
-.image-transition-leave-to {
-  opacity: 0;
-  transform: scale(0.97);
-}
-
-/* ANIMACE TEXTU */
-
-.content-transition-enter-active {
-  transition:
-    opacity 0.45s ease,
-    transform 0.55s ease;
-}
-
-.content-transition-leave-active {
-  transition:
-    opacity 0.25s ease,
-    transform 0.3s ease;
-}
-
-.content-transition-enter-from {
-  opacity: 0;
-  transform: translateY(18px);
-}
-
-.content-transition-leave-to {
-  opacity: 0;
-  transform: translateY(-12px);
-}
-
-.showcase-content {
-  padding: 20px;
-}
-
-.content-number,
-.room-number {
-  color: var(--brown);
-  letter-spacing: 3px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.showcase-content h3 {
-  color: var(--text-dark);
-  font-size: 2.2rem;
-  margin: 20px 0;
-}
-
-.showcase-content p {
-  line-height: 1.9;
-  margin-bottom: 30px;
-}
-
-.slide-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 45px;
-  height: 45px;
-  border: none;
-  border-radius: 50%;
-  background: var(--brown);
-  color: white;
-  font-size: 2rem;
-  z-index: 3;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background 0.3s ease,
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.slide-arrow:hover {
-  background: var(--brown-dark);
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-}
-
-.slide-arrow.left {
-  left: -22px;
-}
-
-.slide-arrow.right {
-  right: -22px;
-}
-
-.slide-dots {
-  display: flex;
-  gap: 10px;
-  margin-top: 35px;
-}
-
-.slide-dots button {
-  width: 10px;
-  height: 10px;
-  border: none;
-  border-radius: 50%;
-  background: #d6c8bc;
-  cursor: pointer;
-  transition:
-    background 0.3s ease,
-    transform 0.3s ease;
-}
-
-.slide-dots button:hover {
-  transform: scale(1.3);
-}
-
-.slide-dots button.active {
-  background: var(--brown);
-  transform: scale(1.2);
-}
-
-/* ROOMS */
-
-.rooms-section {
-  background: var(--cream);
-}
-
-.rooms-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
-  max-width: 1400px;
-  margin: auto;
-}
-
-.room-card {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
-  transition:
-    transform 0.35s ease,
-    box-shadow 0.35s ease;
-}
-
-.room-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-}
-
-.room-image {
-  height: 230px;
-  overflow: hidden;
-}
-
-.room-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.65s ease;
-}
-
-.room-card:hover img {
-  transform: scale(1.07);
+  --ink: #161916;
+  --paper: #f3f0e8;
+  --paper-deep: #e7e2d7;
+  --coral: #ff704d;
+  color: var(--ink);
+  background: var(--paper);
+  overflow: clip;
+}
+
+.page-section { padding: clamp(5.5rem, 10vw, 9.5rem) clamp(1.25rem, 5vw, 5rem); }
+.page-section--dark { color: var(--paper); background: var(--ink); }
+.eyebrow { margin: 0; color: #5e625b; font-size: .72rem; font-weight: 700; letter-spacing: .2em; line-height: 1.4; text-transform: uppercase; }
+.eyebrow--light { color: rgba(255, 255, 255, .72); }
+
+.hero { position: relative; min-height: 48rem; height: 100svh; color: #fff; background: #222; isolation: isolate; }
+.hero-media, .hero-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-media { z-index: -2; object-fit: cover; animation: slowZoom 18s ease-in-out infinite alternate; }
+.hero-shade { z-index: -1; background: linear-gradient(180deg, rgba(8, 12, 9, .5) 0%, rgba(8, 12, 9, .05) 34%, rgba(8, 12, 9, .72) 100%), linear-gradient(90deg, rgba(8, 12, 9, .2), transparent 70%); }
+.hero-copy { position: absolute; right: clamp(1.25rem, 5vw, 5rem); bottom: clamp(5.5rem, 11vh, 8.5rem); left: clamp(1.25rem, 5vw, 5rem); animation: copyIn 1s .15s both; }
+.hero h1, .section-intro h2, .wellness-heading h2, .story-copy h2, .contact h2 { font-family: 'Iowan Old Style', Baskerville, 'Times New Roman', serif; font-weight: 400; letter-spacing: -.045em; }
+.hero h1 { max-width: 68rem; margin: 1.2rem 0 2rem; font-size: clamp(4rem, 8.8vw, 9rem); line-height: .84; }
+.hero h1 em, .wellness-heading h2 em { font-weight: 400; }
+.hero-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; }
+.hero-bottom p { max-width: 31rem; margin: 0; font-size: clamp(1rem, 1.5vw, 1.25rem); line-height: 1.55; }
+.outline-link { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; padding: .75rem 1.25rem; border: 1px solid currentColor; color: var(--ink); font-size: .76rem; font-weight: 700; letter-spacing: .13em; text-decoration: none; text-transform: uppercase; transition: color 220ms ease, background 220ms ease, transform 220ms ease; }
+.outline-link:hover { color: var(--paper); background: var(--ink); transform: translateY(-2px); }
+.outline-link--light { color: #fff; }
+.outline-link--light:hover { color: var(--ink); background: #fff; }
+.scroll-cue { position: absolute; right: clamp(1.25rem, 5vw, 5rem); bottom: 1.75rem; display: flex; align-items: center; gap: .75rem; color: rgba(255, 255, 255, .72); font-size: .7rem; letter-spacing: .16em; text-decoration: none; text-transform: uppercase; }
+.scroll-cue span { width: 2.5rem; height: 1px; background: currentColor; transform-origin: right; animation: linePulse 1.8s ease-in-out infinite; }
+
+.manifesto { display: grid; grid-template-columns: minmax(10rem, .5fr) minmax(18rem, 2fr); gap: 3rem; }
+.manifesto-text { max-width: 70rem; margin: -.25rem 0 0; font-size: clamp(2.15rem, 4.8vw, 5.1rem); letter-spacing: -.045em; line-height: 1.06; }
+.manifesto-text em { color: var(--coral); font-family: 'Iowan Old Style', Baskerville, serif; }
+.manifesto-note { grid-column: 2; display: grid; grid-template-columns: 1fr 1.35fr; max-width: 44rem; gap: 2rem; margin-top: 2.5rem; margin-left: auto; padding-top: 1.5rem; border-top: 1px solid #bbb8af; }
+.manifesto-note span { font-weight: 700; }
+.manifesto-note p { margin: 0; color: #5e625b; line-height: 1.7; }
+
+.section-intro { display: grid; grid-template-columns: 1.4fr .6fr; align-items: end; gap: 4rem; margin-bottom: clamp(3rem, 6vw, 6rem); }
+.section-intro h2 { margin: 1rem 0 0; font-size: clamp(3rem, 6vw, 6.5rem); line-height: .95; }
+.section-intro > p, .section-sidecopy > p { max-width: 29rem; margin: 0; color: #646861; line-height: 1.75; }
+.section-intro--light > p { color: rgba(255, 255, 255, .58); }
+
+.room-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 2.5vw, 2.25rem); }
+.room-card { position: relative; min-height: clamp(28rem, 53vw, 43rem); overflow: hidden; color: #fff; background: #2b2d29; }
+.room-card:nth-child(even) { min-height: clamp(24rem, 47vw, 38rem); margin-top: clamp(3rem, 8vw, 8rem); }
+.room-card img, .room-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+.room-card img { object-fit: cover; transition: transform 800ms cubic-bezier(.2, .7, .2, 1); }
+.room-card:hover img { transform: scale(1.045); }
+.room-shade { background: linear-gradient(180deg, rgba(0, 0, 0, .06) 30%, rgba(0, 0, 0, .76) 100%); }
+.room-meta { position: absolute; right: 2rem; bottom: 2rem; left: 2rem; }
+.room-meta p { margin: 0 0 .7rem; font-size: .72rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.room-meta h3 { margin: 0; font-family: 'Iowan Old Style', Baskerville, serif; font-size: clamp(2.2rem, 4vw, 4rem); font-weight: 400; letter-spacing: -.035em; }
+.room-meta span { display: block; max-width: 27rem; max-height: 0; margin-top: 0; overflow: hidden; opacity: 0; line-height: 1.6; transition: opacity 300ms ease, max-height 300ms ease, margin 300ms ease; }
+.room-card:hover .room-meta span, .room-card:focus-within .room-meta span { max-height: 6rem; margin-top: .75rem; opacity: .82; }
+.room-card > a { position: absolute; inset: 0; color: transparent; font-size: 0; }
+
+.dining { background: var(--paper); }
+.section-sidecopy { display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+.dining-feature { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(20rem, .75fr); min-height: 42rem; background: var(--paper-deep); }
+.dining-image { min-height: 36rem; overflow: hidden; }
+.dining-image img { width: 100%; height: 100%; object-fit: cover; }
+.dining-copy { display: flex; flex-direction: column; justify-content: space-between; padding: clamp(2rem, 5vw, 4.5rem); }
+.dining-copy h3 { margin: 1.2rem 0 1.6rem; color: var(--coral); font-family: 'Iowan Old Style', Baskerville, serif; font-size: clamp(3.5rem, 6vw, 6rem); font-weight: 400; letter-spacing: -.05em; }
+.body-copy { max-width: 30rem; margin: 0; line-height: 1.8; }
+.slider-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 2rem; border-top: 1px solid #bcb9af; }
+.slider-controls > button, .wellness-tabs button { border: 0; color: inherit; background: transparent; font: inherit; cursor: pointer; }
+.slider-controls > button { padding: .5rem 0; font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.slider-dots { display: flex; gap: .6rem; }
+.slider-dots button { width: .65rem; height: .65rem; padding: 0; border: 1px solid var(--ink); border-radius: 50%; background: transparent; cursor: pointer; }
+.slider-dots button.active { background: var(--ink); }
+
+.wellness { display: grid; grid-template-columns: minmax(18rem, .7fr) minmax(24rem, 1.3fr); grid-template-rows: auto auto; gap: 3rem clamp(3rem, 7vw, 8rem); color: #fff; background: #4f5b48; }
+.wellness-heading h2 { margin: 1.5rem 0 0; font-size: clamp(3.5rem, 6.8vw, 7.2rem); line-height: .9; }
+.wellness-heading h2 em { color: #dce4cf; }
+.wellness-stage { position: relative; min-height: 38rem; overflow: hidden; }
+.wellness-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.wellness-caption { position: absolute; right: 1.5rem; bottom: 1.5rem; left: 1.5rem; padding: 1.5rem; background: rgba(14, 18, 13, .76); backdrop-filter: blur(14px); }
+.wellness-caption h3 { margin: 0 0 .55rem; font-family: 'Iowan Old Style', Baskerville, serif; font-size: 2rem; font-weight: 400; }
+.wellness-caption p { max-width: 35rem; margin: 0; color: rgba(255, 255, 255, .72); line-height: 1.6; }
+.wellness-tabs { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid rgba(255, 255, 255, .28); }
+.wellness-tabs button { position: relative; padding: 1.4rem 0; border-right: 1px solid rgba(255, 255, 255, .22); color: rgba(255, 255, 255, .62); font-size: clamp(1rem, 1.5vw, 1.2rem); text-align: left; transition: color 200ms ease, padding 200ms ease; }
+.wellness-tabs button:last-child { border-right: 0; }
+.wellness-tabs button.active { padding-left: 1rem; color: #fff; }
+.wellness-tabs button.active::before { position: absolute; top: -1px; right: 0; left: 0; height: 3px; background: #dce4cf; content: ''; }
+
+.story { display: grid; grid-template-columns: minmax(22rem, 1.1fr) minmax(18rem, .9fr); align-items: center; gap: clamp(3rem, 8vw, 9rem); background: var(--paper); }
+.story-image { min-height: 42rem; }
+.story-image img { width: 100%; height: 100%; object-fit: cover; }
+.story-copy h2 { margin: 1.2rem 0 2rem; font-size: clamp(3rem, 5vw, 5.4rem); line-height: .97; }
+.story-copy > p:not(.eyebrow) { max-width: 32rem; margin: 0 0 2rem; color: #5e625b; line-height: 1.85; }
+
+.contact { padding: clamp(5.5rem, 10vw, 9rem) clamp(1.25rem, 5vw, 5rem) 3rem; color: #fff; background: var(--coral); }
+.contact-top { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2rem; padding-bottom: clamp(4rem, 8vw, 8rem); }
+.contact-top .eyebrow { grid-column: 1 / -1; color: rgba(255, 255, 255, .72); }
+.contact h2 { margin: 0; font-size: clamp(4rem, 10vw, 10rem); line-height: .84; }
+.contact-details { display: grid; grid-template-columns: 1.4fr 1fr .7fr; gap: 2rem; padding: 2rem 0; border-top: 1px solid rgba(255, 255, 255, .45); }
+.contact-details span { display: block; margin-bottom: 1rem; color: rgba(255, 255, 255, .68); font-size: .7rem; font-weight: 700; letter-spacing: .17em; text-transform: uppercase; }
+.contact-details p, .contact-details a { display: block; margin: 0; color: #fff; line-height: 1.65; text-decoration: none; }
+
+.footer { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 2rem; padding: 2rem clamp(1.25rem, 5vw, 5rem); color: rgba(255, 255, 255, .65); background: var(--ink); }
+.footer-brand { color: #fff; font-size: 1.3rem; letter-spacing: .22em; text-decoration: none; }
+.footer-links { display: flex; gap: 1.5rem; }
+.footer-links a { color: inherit; font-size: .85rem; text-decoration: none; }
+.footer p { margin: 0; font-size: .75rem; text-align: right; }
+
+.media-swap-enter-active, .copy-swap-enter-active { transition: opacity 450ms ease, transform 600ms cubic-bezier(.2, .7, .2, 1); }
+.media-swap-leave-active, .copy-swap-leave-active { transition: opacity 220ms ease, transform 300ms ease; }
+.media-swap-enter-from, .copy-swap-enter-from { opacity: 0; transform: translateY(1.25rem); }
+.media-swap-leave-to, .copy-swap-leave-to { opacity: 0; transform: translateY(-.75rem); }
+
+@keyframes copyIn { from { opacity: 0; transform: translateY(2rem); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.05); } }
+@keyframes linePulse { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(.35); opacity: .45; } }
+
+@media (max-width: 960px) {
+  .manifesto, .section-intro, .story { grid-template-columns: 1fr; }
+  .manifesto-note { grid-column: 1; }
+  .dining-feature { grid-template-columns: 1.25fr .85fr; }
+  .wellness { grid-template-columns: 1fr; }
+  .wellness-stage { min-height: 34rem; }
+}
+
+@media (max-width: 720px) {
+  .hero { min-height: 42rem; }
+  .hero h1 { font-size: clamp(3.4rem, 16vw, 5.5rem); }
+  .hero-bottom { align-items: flex-start; flex-direction: column; }
+  .scroll-cue { display: none; }
+  .manifesto-note, .contact-top, .contact-details, .footer { grid-template-columns: 1fr; }
+  .room-list { grid-template-columns: 1fr; }
+  .room-card, .room-card:nth-child(even) { min-height: 31rem; margin-top: 0; }
+  .room-meta span { max-height: 6rem; margin-top: .75rem; opacity: .82; }
+  .dining-feature { grid-template-columns: 1fr; }
+  .dining-image { min-height: 25rem; }
+  .wellness-stage, .story-image { min-height: 28rem; }
+  .wellness-tabs { grid-template-columns: repeat(2, 1fr); }
+  .wellness-tabs button { border-bottom: 1px solid rgba(255, 255, 255, .22); }
+  .contact-top .eyebrow { grid-column: 1; }
+  .contact-top .outline-link { justify-self: start; }
+  .footer-links { flex-wrap: wrap; }
+  .footer p { text-align: left; }
 }
-
-.room-content {
-  padding: 25px;
-}
-
-.room-content h3 {
-  color: var(--brown);
-  font-size: 1.2rem;
-  margin: 12px 0;
-}
-
-.room-content p {
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: #78695e;
-}
-
-.text-link {
-  color: var(--brown);
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.25s ease;
-}
-
-.text-link:hover {
-  color: var(--brown-dark);
-}
-
-/* WELLNESS */
-
-.wellness-section {
-  background: white;
-}
-
-.wellness-showcase {
-  grid-template-columns: 1fr 1fr;
-}
-
-/* REVIEWS */
-
-.reviews-section {
-  background: var(--cream);
-}
-
-.reviews-placeholder {
-  max-width: 650px;
-  margin: auto;
-  padding: 45px;
-  text-align: center;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.reviews-placeholder:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
-}
-
-.reviews-placeholder span {
-  color: #c49a6c;
-  font-size: 2rem;
-  letter-spacing: 5px;
-}
-
-.reviews-placeholder p {
-  margin: 20px 0;
-  line-height: 1.8;
-}
-
-.reviews-placeholder small {
-  color: #998b80;
-}
-
-/* ABOUT */
-
-.about-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  gap: 65px;
-  max-width: 1400px;
-  margin: auto;
-}
-
-.about-image {
-  height: 420px;
-  border-radius: 18px;
-  overflow: hidden;
-}
-
-.about-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.7s ease;
-}
-
-.about-image:hover img {
-  transform: scale(1.04);
-}
-
-.about-content h2 {
-  color: var(--text-dark);
-  font-size: 2.4rem;
-  font-weight: 500;
-  line-height: 1.35;
-  margin: 20px 0;
-}
-
-.about-content p {
-  line-height: 1.9;
-  margin-bottom: 20px;
-}
-
-/* CONTACT */
-
-.contact-section {
-  padding: 80px 7%;
-  background: var(--cream);
-}
-
-.contact-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  max-width: 1100px;
-  margin: auto;
-  gap: 30px;
-  text-align: center;
-}
-
-.contact-grid h3 {
-  color: var(--text-dark);
-  margin: 15px 0 10px;
-}
-
-.contact-icon {
-  font-size: 2rem;
-  color: var(--brown);
-}
-
-.contact-grid p {
-  color: #78695e;
-  overflow-wrap: anywhere;
-}
-
-/* FOOTER */
-
-.home-footer {
-  background: #302017;
-  color: white;
-  padding: 50px 7% 25px;
-  text-align: center;
-}
-
-.home-footer h3 {
-  letter-spacing: 3px;
-  font-weight: 500;
-}
-
-.home-footer p {
-  color: #c5b6a9;
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 25px;
-  margin: 30px 0;
-}
-
-.footer-links a {
-  color: #e0d4ca;
-  text-decoration: none;
-  transition: color 0.25s ease;
-}
-
-.footer-links a:hover {
-  color: #c49a6c;
-}
-
-.home-footer small {
-  color: #a99b90;
-}
-
-/* KEYFRAMES */
-
-@keyframes heroFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(25px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes heroZoom {
-  from {
-    transform: scale(1);
-  }
-
-  to {
-    transform: scale(1.06);
-  }
-}
-
-@keyframes scrollBounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(8px);
-  }
-}
-
-/* RESPONSIVE */
-
-@media (max-width: 1000px) {
-  .rooms-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .showcase {
-    gap: 25px;
-  }
-}
-
-@media (max-width: 768px) {
-  .hero {
-    height: 75vh;
-    min-height: 550px;
-  }
-
-  .home-section {
-    padding: 65px 6%;
-  }
-
-  .showcase,
-  .wellness-showcase,
-  .about-section {
-    grid-template-columns: 1fr;
-  }
-
-  .showcase-image {
-    height: 300px;
-  }
-
-  .showcase-content {
-    padding: 15px 5px;
-  }
-
-  .slide-arrow.left {
-    left: -12px;
-  }
-
-  .slide-arrow.right {
-    right: -12px;
-  }
-
-  .rooms-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-  }
-
-  .room-image {
-    height: 180px;
-  }
-
-  .room-content {
-    padding: 17px;
-  }
-
-  .about-image {
-    height: 300px;
-  }
-
-  .contact-grid {
-    grid-template-columns: 1fr;
-    gap: 35px;
-  }
-}
-
-@media (max-width: 480px) {
-  .rooms-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-content h1 {
-    font-size: 2.3rem;
-  }
-
-  .footer-links {
-    gap: 15px;
-  }
-}
-
-/* RESPEKTOVÁNÍ NASTAVENÍ OMEZENÍ ANIMACÍ */
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 </style>

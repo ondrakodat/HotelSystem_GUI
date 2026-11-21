@@ -1,25 +1,21 @@
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import './HeaderMenu.css'
-import {useAuthStore} from "../stores/authStores";
+import { useAuthStore } from '../stores/authStores'
 
 const menuOpen = ref(false)
+const route = useRoute()
 const navigation = [
   { label: 'Domů', href: '/#domu' },
   { label: 'Pokoje', href: '/#pokoje' },
-  { label: 'Restaurace', href: '/#restaurace' },
+  { label: 'Gastronomie', href: '/#restaurace' },
   { label: 'Wellness', href: '/#wellness' },
   { label: 'Kontakt', href: '/#kontakt' },
 ]
 const authStore = useAuthStore()
-
-watch(
-  () => authStore.isAuthenticated,
-  (newValue) => {
-    console.log('Změna autentizace:', newValue)
-  }
-)
+const isHome = computed(() => route.path === '/')
 
 function closeMenu() {
   menuOpen.value = false
@@ -27,18 +23,11 @@ function closeMenu() {
 </script>
 
 <template>
-  <header class="hotel-header">
-
-    
-
+  <header class="hotel-header" :class="{ 'hotel-header--home': isHome, 'menu-is-open': menuOpen }">
     <div class="header-container">
       <RouterLink to="/" class="hotel-logo" @click="closeMenu">
-        <span class="logo-symbol" aria-hidden="true">E</span>
-
-        <span class="logo-text">
-          <span class="logo-name">HOTEL ELEMENT</span>
-          <span class="logo-subtitle">MÍSTO PRO VÁŠ ODPOČINEK</span>
-        </span>
+        <span class="logo-symbol" aria-hidden="true"></span>
+        <span class="logo-name">ELEMENT</span>
       </RouterLink>
 
       <button
@@ -69,23 +58,23 @@ function closeMenu() {
         </RouterLink>
 
         <div class="header-actions">
-            <RouterLink
-                v-if="!authStore.isAuthenticated"
-                to="/login"
-                class="login-link"
-                @click="closeMenu"
-              >
-                Přihlásit se
-              </RouterLink>
+          <RouterLink
+            v-if="!authStore.isAuthenticated"
+            to="/login"
+            class="login-link"
+            @click="closeMenu"
+          >
+            Přihlášení
+          </RouterLink>
 
-              <RouterLink
-                v-else
-                to="/profile"
-                class="login-link"
-                @click="closeMenu"
-              >
-                Můj profil
-              </RouterLink>
+          <RouterLink
+            v-else
+            to="/profile"
+            class="login-link"
+            @click="closeMenu"
+          >
+            Můj profil
+          </RouterLink>
 
           <RouterLink
             to="/#pokoje"
@@ -93,8 +82,7 @@ function closeMenu() {
             @click="closeMenu"
           >
             Rezervovat pobyt
-            <span aria-hidden="true">→</span>
-            </RouterLink>
+          </RouterLink>
         </div>
       </nav>
     </div>
@@ -102,8 +90,6 @@ function closeMenu() {
 </template>
 
 <style scoped>
-
-
 @media (prefers-reduced-motion: reduce) {
   .nav-link,
   .nav-link::after,
