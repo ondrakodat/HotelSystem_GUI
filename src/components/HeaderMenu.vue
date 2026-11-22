@@ -26,7 +26,6 @@ function closeMenu() {
   <header class="hotel-header" :class="{ 'hotel-header--home': isHome, 'menu-is-open': menuOpen }">
     <div class="header-container">
       <RouterLink to="/" class="hotel-logo" @click="closeMenu">
-        <span class="logo-symbol" aria-hidden="true"></span>
         <span class="logo-name">ELEMENT</span>
       </RouterLink>
 

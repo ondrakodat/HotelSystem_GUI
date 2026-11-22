@@ -27,6 +27,8 @@ const rooms = [
     meta: 'Pro klidný sólo pobyt',
     description: 'Promyšlený prostor s pracovním místem a výhledem do okolní krajiny.',
     image: '/images/Jednoluzkovy/Jednoluzkovy.jpg',
+    price: 'od 2 490 Kč',
+    facts: ['18 m²', 'Queen bed', 'Snídaně v ceně'],
   },
   {
     name: 'Dvoulůžkový pokoj',
@@ -132,10 +134,38 @@ function nextRestaurant() {
       </div>
 
       <div class="room-list">
-        <article v-for="room in rooms" :key="room.name" class="room-card">
+        <article
+          v-for="(room, index) in rooms"
+          :key="room.name"
+          class="room-card"
+          :class="{ 'room-card--featured': index === 0 }"
+        >
           <img :src="room.image" :alt="room.name" loading="lazy" />
           <div class="room-shade"></div>
-          <div class="room-meta">
+          <template v-if="index === 0">
+            <div class="room-featured-top">
+              <span>01</span>
+              <p>Hotel Element · Pardubice</p>
+            </div>
+            <div class="room-featured-panel">
+              <p class="room-kicker">{{ room.meta }}</p>
+              <div class="room-featured-heading">
+                <h3>{{ room.name }}</h3>
+                <div class="room-price">
+                  <strong>{{ room.price }}</strong>
+                  <span>/ noc</span>
+                </div>
+              </div>
+              <p class="room-featured-description">{{ room.description }}</p>
+              <div class="room-featured-footer">
+                <ul aria-label="Vybavení pokoje">
+                  <li v-for="fact in room.facts" :key="fact">{{ fact }}</li>
+                </ul>
+                <span class="room-cta" aria-hidden="true">Prohlédnout pokoj <b>↗</b></span>
+              </div>
+            </div>
+          </template>
+          <div v-else class="room-meta">
             <p>{{ room.meta }}</p>
             <h3>{{ room.name }}</h3>
             <span>{{ room.description }}</span>
@@ -343,6 +373,26 @@ function nextRestaurant() {
 .room-meta span { display: block; max-width: 27rem; max-height: 0; margin-top: 0; overflow: hidden; opacity: 0; line-height: 1.6; transition: opacity 300ms ease, max-height 300ms ease, margin 300ms ease; }
 .room-card:hover .room-meta span, .room-card:focus-within .room-meta span { max-height: 6rem; margin-top: .75rem; opacity: .82; }
 .room-card > a { position: absolute; inset: 0; color: transparent; font-size: 0; }
+.room-card--featured { isolation: isolate; }
+.room-card--featured .room-shade { background: linear-gradient(180deg, rgba(10, 12, 9, .48) 0%, rgba(10, 12, 9, .03) 42%, rgba(10, 12, 9, .35) 100%); }
+.room-featured-top { position: absolute; z-index: 1; top: 1.75rem; right: 1.75rem; left: 1.75rem; display: flex; align-items: center; justify-content: space-between; padding-bottom: .9rem; border-bottom: 1px solid rgba(255, 255, 255, .48); }
+.room-featured-top span { display: grid; width: 2.15rem; height: 2.15rem; place-items: center; border: 1px solid rgba(255, 255, 255, .7); border-radius: 50%; font-family: 'Iowan Old Style', Baskerville, serif; font-size: .88rem; }
+.room-featured-top p { margin: 0; font-size: .66rem; font-weight: 700; letter-spacing: .17em; text-transform: uppercase; }
+.room-featured-panel { position: absolute; z-index: 1; right: 1.25rem; bottom: 1.25rem; left: 1.25rem; padding: clamp(1.35rem, 3vw, 2.2rem); color: var(--ink); background: rgba(243, 240, 232, .94); box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, .2); backdrop-filter: blur(18px); }
+.room-kicker { margin: 0 0 1rem; color: #6a6e66; font-size: .68rem; font-weight: 700; letter-spacing: .17em; text-transform: uppercase; }
+.room-featured-heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; }
+.room-featured-heading h3 { max-width: 27rem; margin: 0; font-family: 'Iowan Old Style', Baskerville, serif; font-size: clamp(2.3rem, 4vw, 4.15rem); font-weight: 400; letter-spacing: -.045em; line-height: .94; }
+.room-price { flex: 0 0 auto; text-align: right; }
+.room-price strong { display: block; color: var(--coral); font-family: 'Iowan Old Style', Baskerville, serif; font-size: clamp(1.3rem, 2vw, 1.75rem); font-weight: 400; }
+.room-price span { color: #72766f; font-size: .72rem; }
+.room-featured-description { max-width: 33rem; margin: 1.15rem 0 1.35rem; color: #555951; font-size: .92rem; line-height: 1.65; }
+.room-featured-footer { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(22, 25, 22, .18); }
+.room-featured-footer ul { display: flex; flex-wrap: wrap; gap: .55rem 1.15rem; margin: 0; padding: 0; list-style: none; }
+.room-featured-footer li { position: relative; padding-left: .75rem; color: #555951; font-size: .72rem; }
+.room-featured-footer li::before { position: absolute; top: .45em; left: 0; width: .28rem; height: .28rem; border-radius: 50%; background: var(--coral); content: ''; }
+.room-cta { display: flex; flex: 0 0 auto; align-items: center; gap: .75rem; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.room-cta b { display: grid; width: 2.2rem; height: 2.2rem; place-items: center; border-radius: 50%; color: #fff; background: var(--coral); font-size: 1rem; transition: transform 220ms ease; }
+.room-card--featured:hover .room-cta b { transform: rotate(45deg); }
 
 .dining { background: var(--paper); }
 .section-sidecopy { display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
@@ -419,6 +469,10 @@ function nextRestaurant() {
   .room-list { grid-template-columns: 1fr; }
   .room-card, .room-card:nth-child(even) { min-height: 31rem; margin-top: 0; }
   .room-meta span { max-height: 6rem; margin-top: .75rem; opacity: .82; }
+  .room-card--featured { min-height: 43rem; }
+  .room-featured-heading { align-items: flex-start; flex-direction: column; gap: .8rem; }
+  .room-price { text-align: left; }
+  .room-featured-footer { align-items: flex-start; flex-direction: column; }
   .dining-feature { grid-template-columns: 1fr; }
   .dining-image { min-height: 25rem; }
   .wellness-stage, .story-image { min-height: 28rem; }
