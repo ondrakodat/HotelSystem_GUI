@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import {ref} from 'vue'
-import { RouterLink } from 'vue-router'
-import {useRouter} from 'vue-router'
-import { resetPasswordRequest } from '@/services/passwordReset';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { resetPasswordRequest } from '@/services/passwordReset'
+import AuthShell from './AuthShell.vue'
+
 const email = ref('')
 const message = ref('')
 const router = useRouter()
+
 async function resetPassword(){
     const passwordResetRequestDto = {
         email: email.value
@@ -14,34 +16,28 @@ async function resetPassword(){
     try{
         const response = await resetPasswordRequest(passwordResetRequestDto)
         console.log(response)
-        message.value = "Pokud email existuje obdrzite kod pro obnoveni"
-        router.push({
+        message.value = 'Pokud účet existuje, odešleme na něj obnovovací kód.'
+        await router.push({
           path: '/resetPasswordConfirm',
           query : {email : email.value}
         })
-        console.log('Aktuální URL:', window.location.href)
-        console.log('Aktuální route:', router.currentRoute.value.fullPath)
     }catch(error){
-        message.value = "Kod pro obnoveni nelze vytvorit "
+        message.value = 'Obnovovací kód se nepodařilo vytvořit.'
         console.error(error)
     }
 }
 </script>
 
 <template>
-  <main class="auth-page">
-    <section class="auth-wrapper">
-
-      <h1 class="auth-title">
-        Obnovení hesla
-      </h1>
-
-      <p class="auth-description">
-        Zadejte e-mailovou adresu, kterou používáte
-        pro přihlášení. Zašleme vám kód pro obnovení hesla.
-      </p>
-
-      <form @submit.prevent="resetPassword">
+  <AuthShell
+    eyebrow="Přístup k účtu"
+    title="Obnovit heslo"
+    description="Zadejte e-mail používaný k přihlášení. Zašleme vám kód pro nastavení nového hesla."
+    image="/images/Sauny/Sauna_Ritual1.jpg"
+    visual-title="Někdy stačí začít znovu."
+    visual-text="Bezpečně vás provedeme obnovením přístupu k vašemu účtu."
+  >
+      <form class="auth-form" @submit.prevent="resetPassword">
         <div class="auth-field">
           <input
             v-model = "email"
@@ -54,7 +50,7 @@ async function resetPassword(){
           <label for="email">E-mailová adresa</label>
         </div>
 
-         <p v-if="message" role="status">
+        <p v-if="message" class="auth-message" role="status">
           {{ message }}
         </p>
 
@@ -68,7 +64,5 @@ async function resetPassword(){
         Vzpomněli jste si na heslo?
         <RouterLink to="/login">Přihlásit se</RouterLink>
       </p>
-
-    </section>
-  </main>
+  </AuthShell>
 </template>

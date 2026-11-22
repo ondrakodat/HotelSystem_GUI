@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import {confirmPasswordReset} from '@/services/passwordResetConfirm'
-import {ref} from 'vue'
+import { confirmPasswordReset } from '@/services/passwordResetConfirm'
+import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import './auth.css'
+import AuthShell from './AuthShell.vue'
 
 const route = useRoute()
 const email = ref(String(route.query.email ?? ''))
 const code = ref('')
 const password = ref('')
 const message = ref('')
+const messageType = ref<'error' | 'success'>('error')
 const confirmPassword = ref('')
 
 async function confirmReset () {
     if (password.value !== confirmPassword.value) {
-        message.value = "Zadaná hesla se neshodují!"
+        messageType.value = 'error'
+        message.value = 'Zadaná hesla se neshodují.'
         return
     }
 
@@ -24,9 +26,11 @@ async function confirmReset () {
     }
     try{
         await confirmPasswordReset(passwordResetConfirmDto);
-        message.value = "Password reset was succesfull"
-    }catch(error){
-        message.value = "Password reset wasnt sucesfull!"
+        messageType.value = 'success'
+        message.value = 'Heslo bylo úspěšně změněno.'
+    } catch {
+        messageType.value = 'error'
+        message.value = 'Heslo se nepodařilo změnit. Zkontrolujte kód a zkuste to znovu.'
     }
 }
 
@@ -34,19 +38,15 @@ async function confirmReset () {
 
 </script>
 <template>
-  <main class="auth-page">
-    <section class="auth-wrapper">
-
-      <h1 class="auth-title">
-        Obnovení hesla
-      </h1>
-
-      <p class="auth-description">
-        Zadejte ověřovací kód, který jsme vám zaslali na email,
-        a nastavte si nové heslo.
-      </p>
-
-      <form @submit.prevent="confirmReset">
+  <AuthShell
+    eyebrow="Poslední krok"
+    title="Nové heslo"
+    description="Zadejte šestimístný ověřovací kód z e-mailu a nastavte si nové heslo."
+    image="/images/Bazen/Bazen_Venkovni.jpg"
+    visual-title="Zpátky ke klidnějším plánům."
+    visual-text="Po ověření kódu budete mít ke svému účtu znovu plný přístup."
+  >
+      <form class="auth-form" @submit.prevent="confirmReset">
 
         <!-- Email -->
         <div class="auth-field">
@@ -104,7 +104,11 @@ async function confirmReset () {
           <label for="confirmPassword">Potvrzení nového hesla</label>
         </div>
 
-        <p v-if="message" class="auth-error" role="status">
+        <p
+          v-if="message"
+          :class="messageType === 'success' ? 'auth-success' : 'auth-error'"
+          role="status"
+        >
           {{ message }}
         </p>
 
@@ -118,7 +122,5 @@ async function confirmReset () {
         Vzpomněli jste si na heslo?
         <RouterLink to="/login">Přihlásit se</RouterLink>
       </p>
-
-    </section>
-  </main>
+  </AuthShell>
 </template>

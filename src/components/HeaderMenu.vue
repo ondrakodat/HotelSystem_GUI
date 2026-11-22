@@ -59,7 +59,7 @@ function closeMenu() {
 
         <div class="header-actions">
           <RouterLink
-            v-if="!authStore.isAuthenticated"
+            v-if="authStore.isAuthenticated === false"
             to="/login"
             class="login-link"
             @click="closeMenu"
@@ -68,7 +68,7 @@ function closeMenu() {
           </RouterLink>
 
           <RouterLink
-            v-else
+            v-else-if="authStore.isAuthenticated === true"
             to="/profile"
             class="login-link"
             @click="closeMenu"

@@ -2,20 +2,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { loginPerson } from '../services/authService'
-import './auth.css'
-import { useRouter, RouterLink } from 'vue-router'
-
-
+import { useRoute, useRouter } from 'vue-router'
+import AuthShell from './AuthShell.vue'
 
 const email = ref('')
 const secret = ref('')
 const rememberMe = ref(false)
-const errorMessage = ref('')
+const route = useRoute()
+const errorMessage = ref(
+  route.query.googleError === 'true'
+    ? 'Přihlášení přes Google se nezdařilo. Zkuste to prosím znovu.'
+    : ''
+)
 const isSubmitting = ref(false)
 const router = useRouter()
-
-
-
 
 async function Login() {
   errorMessage.value = ''
@@ -41,11 +41,15 @@ async function Login() {
 </script>
 
 <template>
-  <main class="auth-page">
-    <div class="auth-wrapper">
-      <h1 class="auth-title">Přihlášení</h1>
-
-      <form @submit.prevent="Login">
+  <AuthShell
+    eyebrow="Vítejte zpět"
+    title="Přihlášení"
+    description="Přihlaste se a mějte své údaje i budoucí pobyty na jednom místě."
+    image="/images/Lobby.jpg"
+    visual-title="Váš klid začíná už tady."
+    visual-text="Přihlaste se do osobního prostoru Hotelu Element."
+  >
+      <form class="auth-form" @submit.prevent="Login">
         <div class="auth-field">
           <input
             id="email"
@@ -92,15 +96,26 @@ async function Login() {
         >
           {{ isSubmitting ? 'Přihlašování…' : 'Přihlásit se' }}
         </button>
-        
+
+        <div class="auth-divider" aria-hidden="true">
+          <span>nebo</span>
+        </div>
+
+        <a
+          class="auth-google"
+          href="/oauth2/authorization/google"
+        >
+          <span class="auth-google-mark" aria-hidden="true">G</span>
+          Pokračovat přes Google
+        </a>
+
         <p class="auth-signup">
-         <RouterLink to="/resetPassword">Zapomněli jste heslo?</RouterLink>
+          <RouterLink to="/resetPassword">Zapomněli jste heslo?</RouterLink>
         </p>
         <p class="auth-signup">
-          Nemáš účet?
-         <RouterLink to="/register"> Registrovat </RouterLink>
+          Ještě nemáte účet?
+          <RouterLink to="/register">Vytvořit účet</RouterLink>
         </p>
       </form>
-    </div>
-  </main>
+  </AuthShell>
 </template>

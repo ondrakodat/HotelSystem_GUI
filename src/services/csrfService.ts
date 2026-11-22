@@ -1,5 +1,9 @@
 export let csrfToken : string | null = null;
 
+export function clearCsrfToken(): void {
+  csrfToken = null
+}
+
 export async function getCsrfToken(): Promise<string> {
   const response = await fetch ('/api/auth/csrf', {
     method : 'GET',
@@ -12,7 +16,8 @@ export async function getCsrfToken(): Promise<string> {
 
   const csrf = document.cookie
                   .split(';')
-                  .find(cookie => cookie.trim().startsWith('XSRF-TOKEN='))
+                  .map(cookie => cookie.trim())
+                  .find(cookie => cookie.startsWith('XSRF-TOKEN='))
 
   if(!csrf)
     throw new Error('CSRF token not found in cookies')

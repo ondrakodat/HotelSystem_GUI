@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { registerPerson } from '../services/authService'
-import './auth.css'
+import AuthShell from './AuthShell.vue'
 
 const username = ref('')
 const surname = ref('')
@@ -53,11 +53,16 @@ async function register() {
 </script>
 
 <template>
-  <main class="auth-page">
-    <div class="auth-wrapper">
-      <h1 class="auth-title">Registrace</h1>
-
-      <form @submit.prevent="register">
+  <AuthShell
+    eyebrow="Osobní účet"
+    title="Registrace"
+    description="Vytvořte si účet pro rychlejší správu údajů a budoucích pobytů."
+    image="/images/Hotel_pozadi.jpg"
+    visual-title="Více prostoru pro vaše zážitky."
+    visual-text="Jeden účet, ze kterého budete mít svůj pobyt vždy přehledně po ruce."
+    wide
+  >
+      <form class="auth-form auth-form--grid" @submit.prevent="register">
         <div class="auth-field">
           <input
             id="username"
@@ -130,27 +135,26 @@ async function register() {
           <label for="confirmPassword">Potvrzení hesla</label>
         </div>
 
-        <p v-if="errorMessage" class="auth-error" role="alert">
+        <p v-if="errorMessage" class="auth-error auth-form-wide" role="alert">
           {{ errorMessage }}
         </p>
 
-        <p v-if="successMessage" class="auth-success" role="status">
+        <p v-if="successMessage" class="auth-success auth-form-wide" role="status">
           {{ successMessage }}
         </p>
 
         <button
-          class="auth-submit"
+          class="auth-submit auth-form-wide"
           type="submit"
           :disabled="isSubmitting"
         >
           {{ isSubmitting ? 'Registrace probíhá…' : 'Registrovat se' }}
         </button>
 
-        <p class="auth-signup">
-          Už máš účet?
-         <RouterLink to="/login"> Přihlásit se </RouterLink>
+        <p class="auth-signup auth-form-wide">
+          Už máte účet?
+          <RouterLink to="/login">Přihlásit se</RouterLink>
         </p>
       </form>
-    </div>
-  </main>
+  </AuthShell>
 </template>

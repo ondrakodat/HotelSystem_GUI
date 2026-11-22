@@ -10,6 +10,22 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: false,
+      },
+      '/oauth2': {
+        target: 'http://localhost:8080',
+        changeOrigin: false,
+      },
+      '/login/oauth2': {
+        target: 'http://localhost:8080',
+        changeOrigin: false,
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

@@ -1,5 +1,5 @@
 import {apiFetch} from "./apifetchWithCsrfService"
-import {getCsrfToken} from "./csrfService"
+import {clearCsrfToken, getCsrfToken} from "./csrfService"
 import {useAuthStore} from "../stores/authStores"
 /**
  * Method for registration new Person in our Hotel system.
@@ -62,6 +62,10 @@ export async function loginPerson(AuthDto: {
 }
 
 export async function logoutPerson() {
+  // OAuth login replaces its temporary HTTP session. Always bind logout to
+  // the current session instead of reusing a potentially stale CSRF token.
+  await getCsrfToken()
+
   const response = await apiFetch('/auth/logout', {
     method: 'POST',
     headers: {
@@ -75,6 +79,7 @@ export async function logoutPerson() {
 
   const authStore = useAuthStore()
   authStore.logout()
+  clearCsrfToken()
 
   return response
 }
